@@ -2,6 +2,30 @@
 
 To implement this project, you need to implement a simple TODO application using AWS Lambda and Serverless framework. Search for all comments starting with the `TODO:` in the code to find the placeholders that you need to implement.
 
+
+# NOTE
+- dynamoDB is set up to use userId as the partitionKey, so all functions related to *getting* items from the database have to have the userId as an input argument (if it's not provided the query will fail schema check)
+- Note that in some of the lambda functions the response body has to have a key with a certain name. This is because it's defined this way in the frontend (see the `todo-api.ts` in the client code). For example the key in the `getTodos.ts` lambda function is expected to be named `items`. That is, the frontend will check for the existence of these keys and iff the key in the backend response has a different name this will lead to errors (although Postman might not be affected by this!). Therefore the return argument has to look like this: 
+```javascript
+ const item = await somefunction(args)
+ return {
+      statusCode: 201,
+      body: JSON.stringify({
+        item
+    })
+
+ // OR
+
+const result = await somefunction(args)
+return {
+      statusCode: 201,
+      body: JSON.stringify({
+        "item": result
+    })
+
+```
+
+
 # Functionality of the application
 
 This application will allow creating/removing/updating/fetching TODO items. Each TODO item can optionally have an attachment image. Each user only has access to TODO items that he/she has created.

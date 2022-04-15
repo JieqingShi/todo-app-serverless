@@ -4,7 +4,13 @@ To implement this project, you need to implement a simple TODO application using
 
 
 # NOTE
-- dynamoDB is set up to use userId as the partitionKey, so all functions related to *getting* items from the database have to have the userId as an input argument (if it's not provided the query will fail schema check)
+- dynamoDB is set up to use userId as the partitionKey, so all functions related to *getting* items from the database have to have the `userId` as one of the input arguments (if it's not provided the query will fail schema check). In other words if there is a function for getting a todo item by the id, then defining the function like this will fail
+```javascript
+await todosAcess.getTodoById(todoId)  // will fail schema check
+
+await todosAcess.getTodoById(todoId, userId)  // has to be defined like this
+
+```
 - Note that in some of the lambda functions the response body has to have a key with a certain name. This is because it's defined this way in the frontend (see the `todo-api.ts` in the client code). For example the key in the `getTodos.ts` lambda function is expected to be named `items`. That is, the frontend will check for the existence of these keys and iff the key in the backend response has a different name this will lead to errors (although Postman might not be affected by this!). Therefore the return argument has to look like this: 
 ```javascript
  const item = await somefunction(args)

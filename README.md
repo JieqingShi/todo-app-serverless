@@ -31,6 +31,26 @@ return {
 
 ```
 
+- Code needs to be split into business logic and data access (was not that clear from the project rubric). 
+- Creation of unnamed or blank tasks should be disallowed. This can be done by adding a pattern. 
+```json
+"properties": {
+    "name": {
+      "type": "string",
+      "pattern": "(?!^ +$)^.+$",
+      "minLength": 5,
+      "maxLength": 100
+    },
+```
+This specific pattern allows any kind of string with whitespaces, but forbids blank strings and strings consisting of only white spaces.
+Somehow for me just adding the schema validation in the serverless.yaml file did not work
+```
+# did not work, was still able to create blank todo items
+request:
+  schemas:
+  application/json: ${file(models/update-todo-model.json)}
+```
+so I had to add `serverless-reqvalidator-plugin` and `serverless-aws-documentation` plugin as thirdparty plugins to make it work. (see examples from lecture)
 
 # Functionality of the application
 
